@@ -1,0 +1,7 @@
+init a ~ 10
+init b
+set b ~ a
+math a ~ b - a
+out a b
+init c ~ in
+out c
