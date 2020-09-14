@@ -13,6 +13,7 @@ def math(param1, mark, param2):
         ev = eval(f"{param1}{mark}{param2}")
     except SyntaxError:
         print(f"MathError: no such math operator: {mark}")
+        return
     else:
         return ev
 
@@ -36,6 +37,7 @@ def main():
             if string[0] == 'out':
                 if len(string) > 4:
                     print("OutError: can't write more then 3 values")
+                    return
                 else:
                     to_print = ""
                     for i in string[1:]:
@@ -49,6 +51,7 @@ def main():
                                     i = int(i)
                                 except ValueError:
                                     print(f"VarError: no such variable called '{i}'")
+                                    return
                                 else:
                                     to_print += str(i)
                         else:
@@ -58,10 +61,12 @@ def main():
             elif string[0] == 'init':
                 if len(string[1:]) > 3:
                     print(f'NewParamError: cannot process \'{string[1:]}\' expression\nwhile initialization')
+                    return
                 elif len(string[1:]) == 1:
                     init(string[1])
                 elif string[2] != '~':
                     print("ExpressionError")
+                    return
                 else:
                     if re.match(r'\'.+\'', string[3]):
                         init(string[1], string[3])
@@ -72,18 +77,22 @@ def main():
                             p = int(string[3])
                         except ValueError:
                             print(f"ValueError: {string[3]} is not a number, string or param")
+                            return
                         else:
                             init(string[1], p)
             elif string[0] == "set":
                 if len(string[1:]) > 3:
                     print(f'NewParamError: cannot process \'{string[1:]}\' expression\nwhile initialization')
+                    return
                 elif len(string[1:]) < 3 or string[2] != '~':
                     print("ExpressionError")
+                    return
                 else:
                     try:
                         _ = params[string[1]]
                     except KeyError:
                         print(f"VarError: no such variable called '{string[1]}'")
+                        return
                     else:
                         if re.match(r'\'.+\'', string[3]) is not None:
                             params[string[1]] = string[3]
@@ -97,6 +106,7 @@ def main():
                                     p = int(string[3])
                                 except ValueError:
                                     print(f"VarError: no such variable called '{string[3]}'")
+                                    return
                                 else:
                                     params[string[1]] = p
                             else:
@@ -104,15 +114,17 @@ def main():
             elif string[0] == 'math':
                 if string[2] != '~':
                     print('ExpressionError')
+                    return
                 else:
                     try:
                         _ = params[string[1]]
                     except KeyError:
                         print(f"VarError: no such variable called '{string[1]}'")
+                        return
                     else:
                         if len(string[3:]) > 3:
-                            # init(string[1], eval(string[3:]))
-                            print(string[3:])
+                            print("MathError: can process only one expression using \'math\' command")
+                            return
                         else:
                             for i in range(len(string[3:])):
                                 try:
