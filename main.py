@@ -111,7 +111,7 @@ def process(j, string):
                         init(string[1], params[string[3]])
     elif string[0] == 'math':
         if string[2] != '~':
-            print(f'Line {j+1}\nExpressionError')
+            print(f'Line {j+1}\nExpressionError: \'~\' expected but \'{string[2]}\' found')
             return -1
         else:
             try:
@@ -273,7 +273,7 @@ def check(j, string):
                         init(string[1], params[string[3]])
     elif string[0] == 'math':
         if string[2] != '~':
-            print(f'Line {j+1}\nExpressionError')
+            print(f'Line {j+1}\nExpressionError: \'~\' expected but \'{string[2]}\' found')
             return -1
         else:
             try:
