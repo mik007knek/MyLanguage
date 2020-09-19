@@ -60,7 +60,7 @@ def process(j, string):
         elif len(string[1:]) == 1:
             init(string[1])
         elif string[2] != '~':
-            print(f"Line {j+1}\nExpressionError")
+            print(f"Line {j+1}\nExpressionError: \'~\' expected but \'{string[2]}\' found")
             return -1
         else:
             if re.match(r'\'.+\'', string[3]):
@@ -79,8 +79,11 @@ def process(j, string):
         if len(string[1:]) > 3:
             print(f'NewParamError: cannot process \'{string[1:]}\' expression\nwhile initialization')
             return -1
-        elif len(string[1:]) < 3 or string[2] != '~':
-            print(f"Line {j+1}\nExpressionError")
+        elif string[2] != '~':
+            print(f"Line {j+1}\nExpressionError: \'~\' expected but \'{string[2]}\' found")
+            return -1
+        elif len(string[1:]) < 3:
+            print(f"Line {j+1}\nExpressionError: cannot process \'{string[1:]}\' expression")
             return -1
         else:
             try:
@@ -217,7 +220,7 @@ def check(j, string):
         elif len(string[1:]) == 1:
             init(string[1])
         elif string[2] != '~':
-            print(f"Line {j+1}\nExpressionError")
+            print(f"Line {j+1}\nExpressionError: \'~\' expected but \'{string[2]}\' found")
             return -1
         else:
             if re.match(r'\'.+\'', string[3]):
@@ -237,8 +240,11 @@ def check(j, string):
         if len(string[1:]) > 3:
             print(f'NewParamError: cannot process \'{string[1:]}\' expression\nwhile initialization')
             return -1
-        elif len(string[1:]) < 3 or string[2] != '~':
-            print(f"Line {j+1}\nExpressionError")
+        elif string[2] != '~':
+            print(f"Line {j+1}\nExpressionError: \'~\' expected but \'{string[2]}\' found")
+            return -1
+        elif len(string[1:]) < 3:
+            print(f"Line {j+1}\nExpressionError: cannot process \'{string[1:]}\' expression")
             return -1
         else:
             try:
