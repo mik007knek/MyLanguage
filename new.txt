@@ -3,5 +3,7 @@ init b
 set b ~ a
 math a ~ b - a
 out a b
-init c ~ in
+init c ~ 2
+if c>=2 ->
+set c ~ 3
 out c

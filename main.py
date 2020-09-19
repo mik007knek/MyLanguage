@@ -1,8 +1,9 @@
 import re
 
 params = {}
-commands = ['in', 'out', 'init', 'set', 'math']
+commands = ['in', 'out', 'init', 'set', 'math', 'if']
 marks = ['+', '-', '*', '/', '%', '//']
+_if = True
 
 
 def init(param, znach=None):
@@ -131,6 +132,57 @@ def process(j, string):
                         init(string[1], math(j, string[3], string[4], string[5]))
                     except IndexError:
                         print(f"Line {j}\nExpressionError")
+    elif string[0] == "if":
+        global _if
+        i = 0
+        param = ""
+        param1 = ""
+        if string[2] == '->':
+            while string[1][i] not in ['>', '<', '=', '!']:
+                i += 1
+            if string[1][i+1] == '=':
+                mark = string[1][i:i+2]
+            elif string[1][i] in ['=', '!']:
+                mark = string[1][i] + '='
+            else:
+                mark = string[1][i]
+
+            try:
+                _ = params[string[1][:i]]
+            except KeyError:
+                try:
+                    _ = int(string[1][:i])
+                except ValueError:
+                    print(f"Line {j + 1}\nIfError: can concatenate only int")
+                else:
+                    param = int(string[1][:i])
+            else:
+                param = params[string[1][:i]]
+
+            if len(mark) > 1:
+                begin = i+2
+            else:
+                begin = i+1
+
+            try:
+                _ = params[string[1][begin:]]
+            except KeyError:
+                try:
+                    _ = int(string[1][begin:])
+                except ValueError:
+                    print(f"Line {j + 1}\nIfError: can concatenate only int")
+                else:
+                    param1 = int(string[1][begin:])
+            else:
+                param1 = params[string[1][begin:]]
+
+            if eval(f'{param}{mark}{param1}'):
+                _if = True
+            else:
+                _if = False
+        else:
+            print(f'Line {j+1}\nExpressionError: \'->\' expected but \'{string[2]}\' found')
+            return -1
 
 
 def check(j, string):
@@ -252,10 +304,60 @@ def check(j, string):
                     else:
                         if i == -1:
                             return -1
+    elif string[0] == "if":
+        global _if
+        i = 0
+        param = ""
+        param1 = ""
+        if string[2] == '->':
+            while string[1][i] not in ['>', '<', '=', '!']:
+                i += 1
+            if string[1][i + 1] == '=':
+                mark = string[1][i:i + 2]
+            elif string[1][i] in ['=', '!']:
+                mark = string[1][i] + '='
+            else:
+                mark = string[1][i]
+
+            try:
+                _ = params[string[1][:i]]
+            except KeyError:
+                try:
+                    _ = int(string[1][:i])
+                except ValueError:
+                    print(f"Line {j + 1}\nIfError: can concatenate only int")
+                else:
+                    param = int(string[1][:i])
+            else:
+                param = params[string[1][:i]]
+
+            if len(mark) > 1:
+                begin = i + 2
+            else:
+                begin = i + 1
+
+            try:
+                _ = params[string[1][begin:]]
+            except KeyError:
+                try:
+                    _ = int(string[1][begin:])
+                except ValueError:
+                    print(f"Line {j + 1}\nIfError: can concatenate only int")
+                else:
+                    param1 = int(string[1][begin:])
+            else:
+                param1 = params[string[1][begin:]]
+
+            if eval(f'{param}{mark}{param1}'):
+                _if = True
+            else:
+                _if = False
+        else:
+            print(f'Line {j + 1}\nExpressionError: \'->\' expected but \'{string[2]}\' found')
 
 
 def main():
-    global params
+    global params, _if
     with open('new.txt', 'rt') as file:
         file = file.readlines()
         for j in range(len(file)):
@@ -264,13 +366,24 @@ def main():
                 print(f"Line {j+1}\nCommandError: no such command \'{string[0]}\'")
                 return
             else:
-                if check(j, string) == -1:
-                    return
+                if _if:
+                    if check(j, string) == -1:
+                        return
+                else:
+                    _if = True
+                    continue
         params = {}
+        _if = True
         for j in range(len(file)):
             string = file[j].lstrip("\n").split()
-            if process(j, string) == -1:
-                return
+            if _if:
+                if process(j, string) == -1:
+                    return
+                else:
+                    continue
+            else:
+                _if = True
+                continue
 
 
 if __name__ == '__main__':
